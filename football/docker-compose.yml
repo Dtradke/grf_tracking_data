@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BASE: ubuntu:20.04
+    image: gfootball
+    volumes:
+      - .:/gfootball
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
+    command: ["bash"]
