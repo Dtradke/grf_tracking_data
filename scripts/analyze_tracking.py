@@ -91,8 +91,6 @@ def make_plots(
     Main loop/function to make plots for each timestep
     """
 
-    df = df[(df["GAME_ID"] == 45) & (df["TIMESTEP"] == 136031)]
-
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -125,7 +123,7 @@ def make_plots(
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description=f"analyze_tracking_script")
+    parser = ArgumentParser(description="analyze_tracking_script")
     parser.add_argument(
         "--data_path", default="data/", type=str, help="Local path to data directory"
     )
