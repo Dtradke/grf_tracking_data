@@ -1,11 +1,98 @@
 import os
+from typing import Dict
 import pandas as pd
 import numpy as np
 from mplsoccer import Pitch
 import matplotlib.pyplot as plt
 
 from constants import X_MAX, Y_MAX
-from analyze_tracking import get_plot_colors, make_plots
+from utils import get_plot_colors
+
+
+def plot_ball(ball_row: pd.DataFrame, ax: plt.Axes) -> None:
+    """
+    Plots ball on the pitch depending on it's vertical location
+    """
+
+    ball_size = 50 if ball_row["LOCATION_Z"] < 1 else (ball_row["LOCATION_Z"] * 50)
+    ax.scatter(
+        ball_row["LOCATION_X"],
+        ball_row["LOCATION_Y"],
+        ec="k",
+        fc="w",
+        s=ball_size,
+        zorder=110,
+    )
+
+
+def make_plots(
+    df: pd.DataFrame,
+    entity_colors: Dict[int, str],
+    path: str = "tmp/builtin_ai_tracking_figs/",
+) -> None:
+    """
+    Main loop/function to make plots for each timestep
+    """
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    for timestep in list(df["TIMESTEP"].unique()):
+        time_df = df[df["TIMESTEP"] == timestep]
+
+        ball = time_df[time_df["PLAYER_ID"] == -1].iloc[0]
+        time_player_df = time_df[time_df["TEAM_ID"] != -1]
+
+        pitch = Pitch(pitch_color="grass", line_color="white", stripe=True)
+        _, ax = pitch.draw()
+
+        plot_ball(ball, ax)
+        plot_team(time_player_df, ax, entity_colors=entity_colors)
+
+        ax.set_title(f"Timestep: {timestep}", fontsize=16)
+
+        time_str = str(timestep).zfill(5)
+        fname = f"{path}time_{time_str}.png"
+        plt.savefig(fname, bbox_inches="tight", dpi=100)
+        plt.close()
+
+
+def plot_team(df: pd.DataFrame, ax: plt.Axes, entity_colors: Dict[int, str]) -> None:
+    """Plots team given IDs and velo"""
+
+    for _, row in df.iterrows():
+
+        edge_color = "k" if not row["ON_BALL"] else "gold"
+        props = dict(
+            boxstyle="circle",
+            pad=0.1,
+            facecolor=entity_colors[row["TEAM_ID"]],
+            ec=edge_color,
+        )
+
+        number = str(row["PLAYER_ID"]).zfill(3)
+        ax.arrow(
+            row["LOCATION_X"] - 1,
+            row["LOCATION_Y"],
+            row["VELOCITY_X"] * 3,
+            row["VELOCITY_Y"] * 3,
+            length_includes_head=True,
+            color=entity_colors[row["TEAM_ID"]],
+            ec="k",
+            width=0.5,
+            head_width=1,
+            zorder=99,
+        )
+
+        ax.text(
+            row["LOCATION_X"] - 3,
+            row["LOCATION_Y"],
+            number,
+            color=edge_color,
+            fontsize=8,
+            bbox=props,
+            zorder=100,
+        )
 
 
 def make_shot_plot(
@@ -77,11 +164,11 @@ def make_xg_plot(shots: pd.DataFrame) -> None:
         vmin=0.0,
         zorder=0,
     )
-    cbar = fig.colorbar(im_obj, ax=ax)
+    cbar = fig.colorbar(im_obj, pad=0.0001, ax=ax)
     cbar.ax.get_yaxis().labelpad = 15
-    cbar.ax.set_ylabel("EXPECTED GOAL", fontsize=12, rotation=270)
+    cbar.ax.set_ylabel("EXPECTED GOALS", fontsize=16, rotation=270)
 
-    ax.set_title(f"Shot Expected Goals (xG)")
+    # ax.set_title(f"Shot Expected Goals (xG)")
 
     fname = f"tmp/shots/shots_xg.png"
     plt.savefig(fname, bbox_inches="tight", dpi=150)
@@ -142,9 +229,6 @@ def make_pass_plot(
             df, row["GAME_ID"], row["TIMESTEP"], animation_frames=10, path="tmp/passes/"
         )
 
-    print(passes)
-    exit()
-
     passes["DX"] = passes["NEXT_LOCATION_X"] - passes["LOCATION_X"]
     passes["DY"] = passes["NEXT_LOCATION_Y"] - passes["LOCATION_Y"]
 
@@ -164,9 +248,6 @@ def make_pass_plot(
         )
 
     ax.set_title(f"Team 0 Passes: {team_zero.shape[0]}")
-
-    plt.show()
-    exit()
 
     fname = f"{path}/team_0_passes.png"
     plt.savefig(fname, bbox_inches="tight", dpi=150)
