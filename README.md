@@ -19,6 +19,3 @@ python3 scripts/make_events.py --data_path="data/"
 ## Reference
 
 When referencing this dataset, please use the following citation.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
