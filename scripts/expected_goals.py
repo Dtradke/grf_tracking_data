@@ -10,7 +10,7 @@ import pandas as pd
 import warnings
 
 from make_events import make_and_save_events
-from plots import make_shot_plot, make_xg_plot, make_pass_plot
+from plots import make_xg_plot
 from models import expected_goals_model
 
 warnings.filterwarnings("ignore")
@@ -28,10 +28,6 @@ if __name__ == "__main__":
 
     if not os.path.exists(f"{parameters.event_path}shots.csv"):
         make_and_save_events(parameters.event_path, parameters.data_path)
-
-    # make_shot_plot(df, event_maker.shots, animate_top_shots=False)
-    # make_pass_plot(df, event_maker.events)
-    # exit()
 
     shots = pd.read_csv(f"{parameters.event_path}shots.csv")
 

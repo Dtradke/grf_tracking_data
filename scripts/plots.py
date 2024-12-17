@@ -272,3 +272,61 @@ def make_pass_plot(
     fname = f"{path}/team_1_passes.png"
     plt.savefig(fname, bbox_inches="tight", dpi=150)
     plt.close()
+
+
+def plot_pitchcontrol_timestep(
+    tracking_zero,
+    tracking_one,
+    tracking_ball,
+    PPCF,
+    path: str = "tmp/pitch_control/",
+    show: bool = False,
+    title_str: str = None,
+):
+    """
+    Plots the pitch control at a specific timestep of the game
+    """
+    pitch = Pitch()
+    fig, ax = pitch.draw()
+
+    entity_colors = get_plot_colors(pd.concat([tracking_zero, tracking_one]))
+    plot_team(tracking_zero, ax, entity_colors)
+    plot_team(tracking_one, ax, entity_colors)
+    plot_ball(tracking_ball.iloc[0], ax)
+
+    cmap = "bwr_r"
+    im_obj = ax.imshow(
+        np.flipud(PPCF),
+        extent=(0, X_MAX, 0, Y_MAX),
+        interpolation="spline36",
+        vmin=0.0,
+        vmax=1.0,
+        cmap="bwr_r",
+        alpha=0.6,
+    )
+
+    cbar = fig.colorbar(im_obj, fraction=0.029, pad=0.01, ax=ax)
+    cbar.ax.get_yaxis().labelpad = 15
+    cbar.ax.set_ylabel("Team Control", fontsize=16, rotation=270)
+
+    game_id = tracking_zero.iloc[0]["GAME_ID"]
+    timestep = tracking_zero.iloc[0]["TIMESTEP"]
+
+    if title_str is None:
+        title_str = f"Game: {game_id}, TS: {timestep}"
+
+    fig.suptitle(title_str, fontsize=14, y=0.88)
+
+    if show:
+        plt.show()
+        plt.close()
+    else:
+        path = f"{path}{game_id}/"
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        time_str = str(timestep).zfill(5)
+        fname = f"{path}time_{time_str}.png"
+        plt.savefig(fname, bbox_inches="tight", dpi=100)
+        plt.close()
+        print(f"Saved: {fname}")
