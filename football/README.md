@@ -22,7 +22,19 @@ cd football/
 
 ### Step 2: Build and Run the Application in Docker
 
+
+#### Linux
+
 Use the following command to build and run the application in Docker:
+
+```bash
+sudo docker-compose run app
+```
+
+#### Mac
+
+Some issues arise when running Docker on a Mac that make it more complicated than with Linux. We encourage Mac users to download and run Docker Desktop. Following [this](https://stackoverflow.com/questions/66912085/why-is-docker-compose-failing-with-error-internal-load-metadata-suddenly
+) StackOverflow issue, rename the field name using `vim ~/.docker/config.json` and run the following command to run the application in Docker:
 
 ```bash
 sudo docker-compose run app
@@ -50,5 +62,3 @@ Links to Google Research Football:
 * [Google Research Football Repository](https://github.com/google-research/football)
 * [Google Research Football Paper](https://arxiv.org/abs/1907.11180)
 * [GoogleAI blog post](https://ai.googleblog.com/2019/06/introducing-google-research-football.html)
-
-
