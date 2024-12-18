@@ -171,6 +171,7 @@ def make_xg_plot(shots: pd.DataFrame) -> None:
     # ax.set_title(f"Shot Expected Goals (xG)")
 
     fname = f"tmp/shots/shots_xg.png"
+    os.makedirs("tmp/shots", exist_ok=True)
     plt.savefig(fname, bbox_inches="tight", dpi=150)
     plt.close()
 
