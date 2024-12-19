@@ -9,12 +9,10 @@ from argparse import ArgumentParser
 import pandas as pd
 import numpy as np
 import warnings
-from mplsoccer import Pitch
-import matplotlib.pyplot as plt
 
 from constants import X_MAX, Y_MAX
 from utils import scale_locations
-from plots import plot_pitchcontrol_timestep
+from plots import plot_pitchcontrol_timestep, plot_ts_pitch
 
 warnings.filterwarnings("ignore")
 
@@ -250,7 +248,6 @@ def generate_pitch_control_for_timestep(
     tracking_ball,
     params,
     n_grid_cells_x=50,
-    offsides=True,
 ):
     """
     Evaluates pitch control surface over the field based on the locations of all players at the current timestep
@@ -325,8 +322,10 @@ if __name__ == "__main__":
         # get pitch control params
         params = default_model_params()
 
-        for timestep in list(game_df["TIMESTEP"].unique())[:num_frames]:
-            ts_df = game_df[game_df["TIMESTEP"] == timestep]
+        for timestep in list(game_df["TIMESTEP"].unique())[: parameters.num_frames]:
+            ts_df = game_df[game_df["TIMESTEP"] == timestep].drop_duplicates(
+                subset=["PLAYER_ID"]
+            )
 
             # split teams
             team_zero = ts_df[ts_df["TEAM_ID"] == 0]

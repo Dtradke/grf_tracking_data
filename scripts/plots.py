@@ -277,6 +277,18 @@ def make_pass_plot(
     plt.close()
 
 
+def plot_ts_pitch(tracking_zero, tracking_one, tracking_ball):
+    pitch = Pitch()
+    fig, ax = pitch.draw()
+
+    entity_colors = get_plot_colors(pd.concat([tracking_zero, tracking_one]))
+    plot_team(tracking_zero, ax, entity_colors)
+    plot_team(tracking_one, ax, entity_colors)
+    plot_ball(tracking_ball.iloc[0], ax)
+    plt.show()
+    exit()
+
+
 def plot_pitchcontrol_timestep(
     tracking_zero,
     tracking_one,

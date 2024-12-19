@@ -47,6 +47,8 @@ class EventMaker:
         Makes stints based on ball movement
         """
 
+        print("Extracting stints...")
+
         distances = pd.DataFrame()
         for player_id in list(df["PLAYER_ID"].unique()):
 
@@ -56,7 +58,7 @@ class EventMaker:
             player_df["NEXT_LOCATION_Y"] = player_df["LOCATION_Y"].shift(-1)
             player_df = player_df.dropna(subset="NEXT_LOCATION_X")
 
-            player_df["DISTANCE"] = np.linalg.norm(
+            player_df[f"DISTANCE_{player_id}"] = np.linalg.norm(
                 player_df[["NEXT_LOCATION_X", "NEXT_LOCATION_Y"]].values
                 - player_df[["LOCATION_X", "LOCATION_Y"]].values,
                 axis=1,
@@ -66,7 +68,9 @@ class EventMaker:
                 distances["TIMESTEP"] = player_df["TIMESTEP"]
                 distances["GAME_ID"] = player_df["GAME_ID"]
 
-            distances[f"DISTANCE_{player_id}"] = player_df["DISTANCE"].values
+            distances[f"DISTANCE_{player_id}"] = player_df[
+                f"DISTANCE_{player_id}"
+            ].values
 
         max_dist_change = pd.DataFrame()
         max_dist_change["TIMESTEP"] = distances["TIMESTEP"]
@@ -111,6 +115,8 @@ class EventMaker:
         """
         Makes passes table from the tracking data
         """
+
+        print("Extracting events...")
 
         # filter to on-ball events
         df = df[df["ON_BALL"]]
@@ -171,6 +177,8 @@ class EventMaker:
         """
         Makes shots. Post y-loc is given in GRF documentation
         """
+
+        print("Extracting shot events...")
 
         possession = df[
             (df["ON_BALL"]) & (df["LOCATION_X"] > 0) & (df["LOCATION_X"] < X_MAX)

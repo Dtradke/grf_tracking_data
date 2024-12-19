@@ -3,13 +3,21 @@ Full demo script. Once we've recorded a game, make events and run xG/pitch contr
 
 To run through demo (from root):
 1) Collect data from game
-    - Option 1: Run collection process outlined in `/football/README.md`
-    - Option 2: Save pre-recorded dataset from Google Drive
+    - Option 1: Run collection process outlined in `/football/README.md` and move to `data/` directory
+    - Option 2: Save pre-recorded dataset from Google Drive locally in a `data/` directory
 
-2) Train expected goals model on large dataset
+2) Train expected goals model on larger dataset of games in `data/`
     python3 scripts/expected_goals.py --data_path=[root to data dir] --event_path=[root to saved events (if saved)]
 
-3) python3 scripts/full_demo.py --data_path=[root to data dir to predict on] --xg_model_fname=[root path to saved xg model]
+3) Collect new games inside of Docker from GRF
+From root:
+    cd football/
+    sudo docker-compose run app
+    cd gfootball/
+    python3 run_games.py --num_games=[number of games you wish to collect]
+
+4) Run the full demo back outside of docker
+    python3 scripts/full_demo.py --data_path=[path to data you just collected] --xg_model_fname=[path to saved xg model]
 """
 
 import os
@@ -45,8 +53,12 @@ if __name__ == "__main__":
     parameters = parser.parse_args()
 
     games = [
-        fname for fname in os.listdir(parameters.data_path) if fname[-4:] == ".csv"
+        fname
+        for fname in os.listdir(parameters.data_path)
+        if fname[-4:] == ".csv" and "interrupted" not in fname
     ]
+
+    print(f"Selected {len(games)} files of recorded games")
 
     # collect data
     df = pd.concat(
@@ -75,10 +87,11 @@ if __name__ == "__main__":
     # plot xG and pitch control on shots
     for _, row in event_maker.shots[["GAME_ID", "TIMESTEP"]].iterrows():
 
+        # drops duplicates if you mistakingly have two games with the same ID in your dataset
         shot_tracking_ts = event_maker.df[
             (event_maker.df["GAME_ID"] == row["GAME_ID"])
             & (event_maker.df["TIMESTEP"] == row["TIMESTEP"])
-        ]
+        ].drop_duplicates(subset=["PLAYER_ID"])
 
         # split teams
         team_zero = shot_tracking_ts[shot_tracking_ts["TEAM_ID"] == 0]
