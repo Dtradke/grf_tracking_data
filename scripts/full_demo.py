@@ -26,7 +26,7 @@ import pandas as pd
 import warnings
 
 
-from models import expected_goals_model, calculate_xg_features
+from models import calculate_xg_features
 from event_maker import EventMaker
 from pitch_control import default_model_params, generate_pitch_control_for_timestep
 from models import load_expected_goals_model
