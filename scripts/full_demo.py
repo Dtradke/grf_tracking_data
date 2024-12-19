@@ -17,14 +17,18 @@ from argparse import ArgumentParser
 import pandas as pd
 import warnings
 
+
 from models import expected_goals_model, calculate_xg_features
 from event_maker import EventMaker
 from pitch_control import default_model_params, generate_pitch_control_for_timestep
 from models import load_expected_goals_model
-from plots import plot_pitchcontrol_timestep
+from plots import plot_pitchcontrol_timestep, make_pass_plot, create_gifs
 
 
 warnings.filterwarnings("ignore")
+
+
+
 
 
 if __name__ == "__main__":
@@ -97,5 +101,10 @@ if __name__ == "__main__":
 
         # plot pitch control
         plot_pitchcontrol_timestep(
-            team_zero, team_one, ball_df, pitch_control, show=True, title_str=title_str
+            team_zero, team_one, ball_df, pitch_control, show=False, title_str=title_str
         )
+
+    # plot passes and make into gifs
+    make_pass_plot(df, event_maker.events)
+    create_gifs("tmp/passes")
+

@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from mplsoccer import Pitch
 import matplotlib.pyplot as plt
+import imageio
 
 from constants import X_MAX, Y_MAX
 from utils import get_plot_colors
@@ -331,3 +332,28 @@ def plot_pitchcontrol_timestep(
         plt.savefig(fname, bbox_inches="tight", dpi=100)
         plt.close()
         print(f"Saved: {fname}")
+
+def create_gifs(input_dir, duration=0.2):
+    """
+    Create GIFs for all game folders containing PNG images.
+
+    Args:
+        input_dir (str): Path to the base folder containing game subfolders.
+        duration (float): Duration between frames in seconds.
+    """
+    for game_folder in os.listdir(input_dir):
+        game_path = os.path.join(input_dir, game_folder)
+
+        if os.path.isdir(game_path):
+            images = []
+            for filename in sorted(os.listdir(game_path)):
+                if filename.endswith(".png") and filename.startswith("time_"):
+                    images.append(os.path.join(game_path, filename))
+
+            if images:
+                output_file = os.path.join(game_path, "animation.gif")
+                frames = [imageio.imread(img) for img in images]
+                imageio.mimsave(output_file, frames, duration=duration, loop=0)
+                print(f"GIF created for {game_folder} and saved as {output_file}")
+            else:
+                print(f"No PNG files found in {game_folder}")
