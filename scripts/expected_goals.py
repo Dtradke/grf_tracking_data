@@ -2,6 +2,9 @@
 This script trains a simple expected goals model given shot events and their angle/distance from the goal.
 
 If the shot events have not been saved to `event_path/shots.csv`, this script will first launch EventMaker
+
+Example run (from root):
+python3 scripts/expected_goals.py --data_path=[path to pre-recorded tracking] --event_path=[Optional: path to pre-saved events]
 """
 
 import os

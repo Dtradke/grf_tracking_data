@@ -207,6 +207,8 @@ def make_pass_plot(
     Makes pass plot animations and diagram
     """
 
+    print(f"Making {num_animations} animations of passes")
+
     if not os.path.exists(path):
         os.makedirs(path)
 

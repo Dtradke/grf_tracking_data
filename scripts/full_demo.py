@@ -53,6 +53,8 @@ if __name__ == "__main__":
         [pd.read_csv(f"{parameters.data_path}{game_fname}") for game_fname in games]
     ).sort_values(by=["GAME_ID", "TIMESTEP"], ascending=True)
 
+    print(f"Plotting information for {df['GAME_ID'].unique().shape[0]} games")
+
     # make events from game(s)
     event_maker = EventMaker(df)
 
@@ -67,6 +69,8 @@ if __name__ == "__main__":
 
     # get pitch control params
     params = default_model_params()
+
+    print(f"Plotting pitch control/xG for {event_maker.shots.shape[0]} shots")
 
     # plot xG and pitch control on shots
     for _, row in event_maker.shots[["GAME_ID", "TIMESTEP"]].iterrows():
@@ -102,5 +106,5 @@ if __name__ == "__main__":
         )
 
     # plot passes and make into gifs
-    make_pass_plot(df, event_maker.events)
+    make_pass_plot(df, event_maker.events, num_animations=10)
     create_gifs("tmp/passes")

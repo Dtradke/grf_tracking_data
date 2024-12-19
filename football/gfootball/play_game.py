@@ -13,7 +13,9 @@
 # limitations under the License.
 
 
-"""Script allowing to play the game by multiple players."""
+"""
+Main script to simulate Google Research Football and record ball and player tracking data
+"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -70,10 +72,6 @@ def main(_):
 
     count = 0
     game_id = FLAGS.game_id
-
-    print(FLAGS.num_games)
-    print(flags)
-    exit()
 
     player_roles = {
         0: "goalkeeper",

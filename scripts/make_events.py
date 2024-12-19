@@ -28,6 +28,8 @@ def make_and_save_events(event_path: str, data_path: str) -> None:
         [pd.read_csv(f"{data_path}{game_fname}") for game_fname in games]
     ).sort_values(by=["GAME_ID", "TIMESTEP"], ascending=True)
 
+    print(f"Loaded data from {df['GAME_ID'].unique().shape[0]} games")
+
     event_maker = EventMaker(df)
 
     if not os.path.exists(event_path):
