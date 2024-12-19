@@ -28,9 +28,6 @@ from plots import plot_pitchcontrol_timestep, make_pass_plot, create_gifs
 warnings.filterwarnings("ignore")
 
 
-
-
-
 if __name__ == "__main__":
     parser = ArgumentParser(description="expected_goals_model")
     parser.add_argument(
@@ -107,4 +104,3 @@ if __name__ == "__main__":
     # plot passes and make into gifs
     make_pass_plot(df, event_maker.events)
     create_gifs("tmp/passes")
-

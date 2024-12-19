@@ -44,7 +44,7 @@ def make_plots(
         ball = time_df[time_df["PLAYER_ID"] == -1].iloc[0]
         time_player_df = time_df[time_df["TEAM_ID"] != -1]
 
-        pitch = Pitch(pitch_color="grass", line_color="white", stripe=True)
+        pitch = Pitch()
         _, ax = pitch.draw()
 
         plot_ball(ball, ax)
@@ -105,7 +105,7 @@ def make_shot_plot(
 
     if animate_top_shots:
         for _, row in shots[shots["IS_GOAL"]].head(15).iterrows():
-            make_shot_animation(
+            make_event_animation(
                 df,
                 game_id=row["GAME_ID"],
                 shot_timestep=row["TIMESTEP"],
@@ -169,15 +169,13 @@ def make_xg_plot(shots: pd.DataFrame) -> None:
     cbar.ax.get_yaxis().labelpad = 15
     cbar.ax.set_ylabel("EXPECTED GOALS", fontsize=16, rotation=270)
 
-    # ax.set_title(f"Shot Expected Goals (xG)")
-
     fname = f"tmp/shots/shots_xg.png"
     os.makedirs("tmp/shots", exist_ok=True)
     plt.savefig(fname, bbox_inches="tight", dpi=150)
     plt.close()
 
 
-def make_shot_animation(
+def make_event_animation(
     df: pd.DataFrame,
     game_id: int,
     shot_timestep: int,
@@ -185,25 +183,28 @@ def make_shot_animation(
     path: str = "tmp/shots/",
 ) -> None:
     """
-    Plots shot that happens at game_id and shot_timestep
+    Plots event that happens at game_id and shot_timestep
     """
-    print(f"Making shot animation for game {game_id} timestep {shot_timestep}")
+    print(f"Making animation for game {game_id} timestep {shot_timestep}")
 
     entity_colors = get_plot_colors(df)
 
-    shot_df = df[
+    events_df = df[
         (df["GAME_ID"] == game_id)
         & (df["TIMESTEP"] >= shot_timestep)
         & (df["TIMESTEP"] <= (shot_timestep + animation_frames))
     ]
-    make_plots(shot_df, entity_colors, f"{path}{game_id}_{shot_timestep}/")
+    make_plots(events_df, entity_colors, f"{path}{game_id}_{shot_timestep}/")
 
 
 def make_pass_plot(
-    df: pd.DataFrame, events: pd.DataFrame, path: str = "tmp/passes/"
+    df: pd.DataFrame,
+    events: pd.DataFrame,
+    num_animations: int = 10,
+    path: str = "tmp/passes/",
 ) -> None:
     """
-    Makes shot plot diagram
+    Makes pass plot animations and diagram
     """
 
     if not os.path.exists(path):
@@ -214,21 +215,19 @@ def make_pass_plot(
     events["NEXT_LOCATION_X"] = events["LOCATION_X"].shift(-1)
     events["NEXT_LOCATION_Y"] = events["LOCATION_Y"].shift(-1)
     events["NEXT_EVENT_NAME"] = events["EVENT_NAME"].shift(-1)
+    events["NEXT_TIMESTEP"] = events["TIMESTEP"].shift(-1)
     passes = events[
         (events["EVENT_NAME"] == "pass") & (events["NEXT_EVENT_NAME"] == "reception")
     ]
 
-    passes = passes[
-        (passes["LOCATION_X"] > (X_MAX / 2))
-        & (passes["LOCATION_X"] < ((X_MAX / 2) + 10))
-        & (passes["NEXT_LOCATION_Y"] > (Y_MAX / 2))
-        & (passes["NEXT_LOCATION_X"] < 67)
-        & (passes["NEXT_LOCATION_Y"] < 58)
-    ]
-
-    for _, row in passes.head(10).iterrows():
-        make_shot_animation(
-            df, row["GAME_ID"], row["TIMESTEP"], animation_frames=10, path="tmp/passes/"
+    for _, row in passes.head(num_animations).iterrows():
+        pass_duration = row["NEXT_TIMESTEP"] - row["TIMESTEP"]
+        make_event_animation(
+            df,
+            row["GAME_ID"],
+            row["TIMESTEP"],
+            animation_frames=pass_duration + 5,  # plot pass duration + 5 timesteps
+            path="tmp/passes/",
         )
 
     passes["DX"] = passes["NEXT_LOCATION_X"] - passes["LOCATION_X"]
@@ -323,7 +322,7 @@ def plot_pitchcontrol_timestep(
         plt.show()
         plt.close()
     else:
-        path = f"{path}{game_id}/"
+        path = f"{path}game_{game_id}/"
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -332,6 +331,7 @@ def plot_pitchcontrol_timestep(
         plt.savefig(fname, bbox_inches="tight", dpi=100)
         plt.close()
         print(f"Saved: {fname}")
+
 
 def create_gifs(input_dir, duration=0.2):
     """
