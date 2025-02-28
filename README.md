@@ -68,7 +68,7 @@ Python3 scripts/full_demo.py --data_path="football/gfootball/results/" --xg_mode
 The schema for these recorded games are designed to imitate real-world tracking data. We detail the schema below:
 
 | Column Name        | Type           | Description  |
-| ------------- |:-------------:| -----:|
+| ------------- |:-------------| :----- |
 | `GAME_ID`       | `int` | Unique game identifier. |
 | `TIMESTEP`      | `int` | Timestep of the game (increasing from 0). |
 | `TEAM_O_SCORE`  | `int` | Score of team 0 at each timestep. |
