@@ -1,5 +1,8 @@
 # Simulating Tracking Data to Advance Sports Analytics Research
 
+
+![Cover image showing an expected goals model and pitch control model.](images/model_example.png)
+
 This repository accompanies the AAMAS 2025 Demo paper "Simulating Tracking Data to Advance Sports Analytics Research." We utilize Google Research Football reinforcement learning environment to record simulated football (soccer) tracking data in a similar schema to real-world player tracking data.
 
 Find the demo video [here](https://www.youtube.com/watch?v=2pjyxfPVsuw).
@@ -65,7 +68,7 @@ Python3 scripts/full_demo.py --data_path="football/gfootball/results/" --xg_mode
 
 ## Schema Details
 
-The schema for these recorded games are designed to imitate real-world tracking data. We detail the schema below:
+The schema for these recorded games are designed to imitate real-world tracking data. We detail the schema below and include the image below as a reference for the coordinate system:
 
 | Column Name        | Type           | Description  |
 | ------------- |:-------------| :----- |
@@ -83,6 +86,8 @@ The schema for these recorded games are designed to imitate real-world tracking 
 | `VELOCITY_Y`    | `float` | Agent/ball velocity along the y-axis. |
 | `VELOCITY_Z`    | `float` | Agent/ball velocity along the z-axis. |
 | `ON_BALL`       | `bool`  | Indicates if an agent is in possession of the ball. This feature is always `False` for the ball. |
+
+![Pitch figure showing coordinate system.](images/pitch.png)
 
 ## Reference
 
