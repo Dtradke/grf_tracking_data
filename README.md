@@ -14,6 +14,8 @@ The demo includes:
 - An implementation of pitch control [(Spearman et al., 2017)](https://www.researchgate.net/profile/William-Spearman/publication/315166647_Physics-Based_Modeling_of_Pass_Probabilities_in_Soccer/links/58cbfca2aca272335513b33c/Physics-Based-Modeling-of-Pass-Probabilities-in-Soccer.pdf)
 - A unified demo script that uses logic to extract and plot/animate passes and shots
 
+Note that our script to extract events from tracking data is logic based and does miss some edge cases. As this project is open source, we welcome any pull request or contribution to add new methods of extracting event data from the raw tracking data (i.e., similar framework to `make_events.py`).
+
 ## Installation
 
 Create a virtual environment to install the project's requirements. Additionally, collecting new data (step (4) below) will require Docker to be installed. To install the requirements for this project, navigate to root and do the following commands:
