@@ -50,7 +50,7 @@ You have two options to obtain simulated tracking data:
     | **full_set**   | 1000             | 3000                          | 25 GB              |
 
     To download one of these datasets, run the `download_game_data.py` script from the root directory with the desired 
-    size of dataset from the table. Data will be saved to `grf_tracking_data/data/`. For example, to download 4 games use 
+    size of dataset from the table. Data will be saved to `grf_tracking_data/data/`. For example, to download 12 games (4 files) use 
     the `tiny_set` arg and run:
     ```
    python3 scripts/download_game_data.py tiny_set
