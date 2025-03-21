@@ -28,11 +28,35 @@ Deactivate your virtual env by running `deactivate`.
 
 ## Usage and Demo Scripts
 
-Download data files from ... to `grf_tracking_data/data/`. All of the commands listed in this section (except for recording new data) are designed to run from the root of this directory (i.e., `grf_tracking_data/`). Data and models are designed to be saved to a temp directory called: `grf_tracking_data/tmp/`.
+All of the commands listed in this section (except for recording new data) are designed to run from the root of this 
+directory (i.e., `grf_tracking_data/`). The raw pre-recorded game files are accessible [here from Google Drive](https://drive.google.com/drive/folders/1PZ8b-ftnqhIqMV0qnkTB_LWtCnBjhTdD?usp=drive_link)
+and should be placed into: `grf_tracking_data/data/`. We include scripts below to automatically download sets of this pre-recorded
+game data.
+Models and processed data are designed to be saved to a temp directory called: `grf_tracking_data/tmp/`.
 
 #### 1. Collect Data or Download Pre-Recorded Games
 
-To make events, train an expected goals (xG) model, or run pitch control, you will first need simulated tracking data. You have two options to obtain simulated tracking data. 1) You can proceed to step (4) and follow the process of simulating new tracking data or 2) you can download the pre-saved dataset located at the Google Drive linked above. Move the `.csv` files into a data directory from root.
+To make events, train an expected goals (xG) model, or run pitch control, you will first need simulated tracking data. 
+You have two options to obtain simulated tracking data:
+1) You can proceed to step (4) and follow the process of simulating new tracking data.
+2) You can download our pre-recorded game data via Python in one of the follows sets.
+    
+    | Subset Name   | Number of Files | Number of Games (3 per file) | Approx. File Size |
+    |---------------|------------------|-------------------------------|--------------------|
+    | **tiny_set**   | 4                | 12                            | 100 MB             |
+    | **small_set**  | 50               | 150                           | 1.25 GB            |
+    | **medium_set** | 200              | 600                           | 5 GB               |
+    | **large_set**  | 500              | 1500                          | 12.5 GB            |
+    | **full_set**   | 1000             | 3000                          | 25 GB              |
+
+    To download one of these datasets, run the `download_game_data.py` script from the root directory with the desired 
+    size of dataset from the table. Data will be saved to `grf_tracking_data/data/`. For example, to download 4 games use 
+    the `tiny_set` arg and run:
+    ```
+   python3 scripts/download_game_data.py tiny_set
+   ```
+
+
 
 #### 2. Making Events
 
